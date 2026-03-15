@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/render"
 	"log/slog"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"shorter/internal/http-server/handlers/url/redirect"
 	"shorter/internal/http-server/handlers/url/save"
 	"shorter/internal/http-server/logger"
+	resp "shorter/internal/lib/api/response"
 	"shorter/internal/lib/logger/sl"
 	"shorter/internal/lib/logger/slogpretty"
 	"shorter/internal/storage/postgre"
@@ -50,6 +52,9 @@ func main() {
 		r.Post("/", save.New(log, storage))
 	})
 	router.Get("/{alias}", redirect.New(log, storage))
+	router.Get("/ping", func(writer http.ResponseWriter, request *http.Request) {
+		render.JSON(writer, request, resp.OK())
+	})
 
 	log.Info("starting server", slog.String("address", cfg.Address))
 

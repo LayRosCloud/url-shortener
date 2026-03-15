@@ -8,16 +8,16 @@ import (
 )
 
 type Config struct {
-	Env         string `yaml:"env" env-default:"local"`
-	StoragePath string `yaml:"storage_path" env-required:"true"`
+	Env         string `yaml:"env" env-default:"local" env:"ENV"`
+	StoragePath string `yaml:"storage_path" env-required:"true" env:"STORAGE_PATH"`
 	HttpServer  `yaml:"http_server"`
 }
 
 type HttpServer struct {
-	Address     string        `yaml:"address" env-required:"true"`
-	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
-	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"4s"`
-	User        string        `yaml:"user" env-required:"true"`
+	Address     string        `yaml:"address" env-required:"true" env:"ADDRESS"`
+	Timeout     time.Duration `yaml:"timeout" env-default:"4s" env:"TIMEOUT"`
+	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"4s" env:"IDLE_TIMEOUT"`
+	User        string        `yaml:"user" env-required:"true" env:"USER"`
 	Password    string        `yaml:"password" env-required:"true" env:"HTTP_SERVER_PASSWORD"`
 }
 

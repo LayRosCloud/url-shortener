@@ -20,5 +20,57 @@ jobs:
         run: |
           go mod download
           go build -v ./cmd/shorter
-      - name: Tests
+  tests:
+    runs-on: ubuntu-latest
+    needs: [build]
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Pull from Git
+        uses: actions/checkout@v4
+      - name: Set up Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.26.1'
+      - name: Build
+        run: |
+          go mod download
+          go build -v -o ./shorter ./cmd/shorter
+      - name: Start application
+        env:
+          STORAGE_PATH: postgres://test_user:test_password@localhost:5432/test_db?sslmode=disable
+          ADDRESS: localhost:8080
+          TIMEOUT: 4s
+          IDLE_TIMEOUT: 4s
+          USER: user
+          PASSWORD: user
+        run: CONFIG_PATH=./config/local.yaml & ./shorter
+      - name: Wait for Application to be ready
+        run: |
+          echo "Waiting for application to start..."
+          for i in {1..30}; do
+            if curl -f http://localhost:8080/ping; then
+              echo "Application is ready!"
+              exit 0
+            fi
+            echo "Waiting... attempt $i"
+            sleep 2
+          done
+          echo "Application failed to start in time"
+          exit 1
+      - name: Unit Tests
         run: go test -v ./internal/...
+      - name: Functional Tests
+        run: go test -v ./tests/...
