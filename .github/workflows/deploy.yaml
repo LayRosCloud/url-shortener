@@ -1,11 +1,10 @@
 name: CI process Golang
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to CI process Golang"
+        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
