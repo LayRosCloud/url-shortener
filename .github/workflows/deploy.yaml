@@ -56,7 +56,7 @@ jobs:
           IDLE_TIMEOUT: 4s
           USER: user
           PASSWORD: user
-        run: CONFIG_PATH=./config/local.yaml ./shorter
+        run: CONFIG_PATH=./config/local.yaml ./shorter & echo "Application started in background"
       - name: Wait for Application to be ready
         run: |
           echo "Waiting for application to start..."
