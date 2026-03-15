@@ -1,0 +1,11 @@
+services:
+  anthly_base:
+    image: "postgis/postgis:15-3.4"
+    container_name: anthly_base
+    environment:
+      - "POSTGRES_DB=shorter"
+      - "POSTGRES_PASSWORD=admin"
+      - "POSTGRES_USER=admin"
+      - "TZ=UTC"
+    ports:
+      - "5432:5432"

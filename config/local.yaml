@@ -1,0 +1,8 @@
+env: local
+storage_path: postgres://admin:admin@localhost:5432/shorter?sslmode=disable
+http_server:
+  address: localhost:8080
+  timeout: 4s
+  idle_timeout: 4s
+  user: user
+  password: user
